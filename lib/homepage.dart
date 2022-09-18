@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:travelapp/data/data.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -9,6 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final place_list = Place.generatedPlaceList();
   final itemList=['All','New','Most Viewed','Recommended','Premium','Exotic'];
   var selected=0;
   @override
@@ -19,16 +21,18 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: const Icon(Icons.density_medium,color: Colors.black),
-        actions: const [Padding(
-          padding: EdgeInsets.only(right: 18, top: 8),
+        actions: const [
+          Padding(padding: EdgeInsets.only(right: 15, top: 8),
           child: CircleAvatar(
-            radius: 25,
+            backgroundColor: Colors.white,
+            radius: 35,
             backgroundImage: AssetImage('assets/image02.jpeg')
           ),
-        )],
+          )
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top:35),
+        padding: const EdgeInsets.only(top:10),
         child: Column(
           children: [
             Padding(
@@ -147,10 +151,61 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   },
-
                 separatorBuilder: (_,index)=>const SizedBox(width: 5),
               ),
             ),
+            const SizedBox(height: 10),
+            PageView.builder(
+              scrollDirection: Axis.horizontal,
+                    itemCount: place_list.length,
+                    itemBuilder: (context,index){var place = place_list[index];
+                      return GestureDetector(
+                        onTap: (){
+                      setState((){
+                        selected=index;
+                      });
+                    },
+                      child:Container(
+                        height: 300,
+                        color: Colors.blue,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10.0,right: 10),
+                              child: ClipRect(
+                                child: Image.asset(
+                                  place.img,
+                                  fit: BoxFit.cover,
+                                  //height: MediaQuery.of(context).size.height,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                                  bottom:58,
+                                  left: 25,
+                                  child: Text(
+                                    place.name,
+                                    style: GoogleFonts.libreFranklin(color: Colors.white,fontSize: 25,fontWeight: FontWeight.w500),
+                                  )),
+                            Positioned(
+                                bottom:21,
+                                left:50,
+                                child: Text(
+                                  place.location,
+                                  style: GoogleFonts.libreFranklin(color: Colors.white,fontSize: 18),
+                                )),
+                            Positioned(
+                              bottom: 24,
+                              left: 23,
+                              child: Icon(Icons.location_on_sharp,color: Colors.white,size: 18),
+                            ),
+                          ],
+                        ),
+                      )
+                      );
+                    }
+                )
           ]
         ),
       ),
